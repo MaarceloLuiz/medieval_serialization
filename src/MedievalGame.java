@@ -1,8 +1,13 @@
 import entities.Player;
 
+import java.io.*;
 import java.util.Scanner;
 
 public class MedievalGame {
+    /* Instance Variables */
+    private Player player;
+
+    /* Main Method */
     public static void main(String[] args) {
         Scanner console = new Scanner(System.in);
         MedievalGame game = new MedievalGame();
@@ -46,13 +51,43 @@ public class MedievalGame {
 
     private void save() {
         // Add save functionality here
+        String fileName = player.getName() + ".svr";
+
+        try{
+            FileOutputStream userSaverFile = new FileOutputStream(fileName);
+            ObjectOutputStream playerSaver = new ObjectOutputStream(userSaverFile);
+
+            playerSaver.writeObject(player);
+        }
+        catch (IOException e){
+            System.out.println(e.getMessage());
+        }
 
     } // End of save
 
     private Player load(String playerName, Scanner console) {
         // Add load functionality here
+        Player loadedPlayer;
 
-        return new Player("Test");
+        try{
+            FileInputStream userLoadFile = new FileInputStream(playerName+".svr");
+            ObjectInputStream playerLoader = new ObjectInputStream(userLoadFile);
+
+            loadedPlayer = (Player) playerLoader.readObject();
+        }
+        catch(IOException | ClassNotFoundException e){
+            addDelay(1500);
+            System.out.println(e.getMessage());
+            addDelay(1000);
+            System.out.println("\nThere was a problem loading your character, we've created a new player with the name you entered.");
+            System.out.println("If you're sure the spelling is correct, your character file may no longer exist, please reload the game if you'd like to try again.");
+            System.out.println("In the mean time, we'll create you a new character with the name: " + playerName);
+            addDelay(2000);
+
+            loadedPlayer = new Player(playerName);
+        }
+
+        return loadedPlayer;
     } // End of load
 
     // Adds a delay to the console so it seems like the computer is "thinking"
