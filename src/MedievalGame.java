@@ -1,6 +1,9 @@
+import entities.Art;
 import entities.Player;
 
 import java.io.*;
+import java.util.Locale;
+import java.util.Objects;
 import java.util.Scanner;
 
 public class MedievalGame {
@@ -45,8 +48,43 @@ public class MedievalGame {
     /* Instance Methods */
     private Player start(Scanner console) {
         // Add start functionality here
+        Player player;
+        Art.homeScreen();
 
-        return new Player("Test");
+        System.out.println("Welcome to your latest adventure!");
+        System.out.println("Tell me traveler, have you been here before?");
+        System.out.print("   Enter 'y' to load a game, 'n' to create a new game: ");
+        String answer = console.next().toLowerCase();
+
+
+        while (true) {
+            addDelay(500);
+            if (answer.equals("y")) {
+                System.out.print("\nAhh... I knew I remembered you, what was your name again? Let me see if I can find your backpack: ");
+                player = load(console.next(), console);
+                break;
+
+            } else if (answer.equals("n")) {
+                System.out.print("\nWell then, don't be shy, go ahead and tell me your name: ");
+                String possibleName = console.next();
+
+                while (true) {
+                    System.out.println("Welcome " + possibleName + ", am I pronouncing that correctly? (Enter 'y' to confirm, 'n' to enter a new name");
+                    String nameResponse = console.next().toLowerCase();
+                    if (Objects.equals(nameResponse, "y")) break;
+                    System.out.println("So sorry, can you spell it for me again?");
+                    possibleName = console.next();
+                }
+
+                player = new Player(possibleName);
+                break;
+            } else {
+                System.out.print("Sorry adventurer, I only speak the common tongue. Please enter 'y' to load a game or 'n' to start a new game: ");
+                answer = console.next().toLowerCase();
+            }
+        }
+
+        return player;
     } // End of start
 
     private void save() {
